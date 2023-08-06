@@ -6,6 +6,12 @@ Me neither! Click on the link and have fun:
 https://freeway-game-xi.vercel.app
 <br>
 ---
+
+
+![image](https://github.com/jpgercc/freeway-game/assets/115590969/19f30229-2103-4ff1-b303-575dc166cf91)
+
+
+---
 <h4>
   Music:
   Clint Eastwood - Gorillaz 
