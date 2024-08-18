@@ -4,20 +4,35 @@ let yAtor = 366;
 let colisao = false;
 let meusPontos = 0;
 
+let botaoCima, botaoBaixo;
+let movimentoCima = false;
+let movimentoBaixo = false;
+
 function mostraAtor(){
   image(imagemDoAtor, xAtor, yAtor, 30, 30);
 }
 
-function movimentaAtor(){
-  if (keyIsDown(UP_ARROW)){
-    yAtor -= 3;
+function movimentaAtor() {
+  if (typeof botaoCima === 'undefined' || typeof botaoBaixo === 'undefined') {
+    botaoCima = createButton('↑');
+    botaoCima.position(10, height - 60);
+    botaoCima.mousePressed(() => movimentoCima = true);
+    botaoCima.mouseReleased(() => movimentoCima = false);
+
+    botaoBaixo = createButton('↓');
+    botaoBaixo.position(10, height - 30);
+    botaoBaixo.mousePressed(() => movimentoBaixo = true);
+    botaoBaixo.mouseReleased(() => movimentoBaixo = false);
   }
-  if (keyIsDown(DOWN_ARROW)){
-    if(podeSeMover()){
-      yAtor += 3;
-    }
+
+  if (movimentoCima) {
+    yAtor -= 1.3;
+  }
+  if (movimentoBaixo && podeSeMover()) {
+    yAtor += 1.3;
   }
 }
+
 
 function verificaColisao(){
   //collideRectCircle(x1, y1, width1, height1, cx, cy, diameter)
