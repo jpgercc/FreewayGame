@@ -6,7 +6,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #635a00 0%, #ffea00 100%);
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
   font-family: 'Arial', sans-serif;
   overflow: hidden;
   height: 100vh;
@@ -26,7 +26,44 @@ canvas {
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
 }
 
-/* Estilização dos botões de controle */
+/* Área de controle por swipe para mobile */
+.swipe-control {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 150px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.3));
+  display: none; /* Oculto por padrão */
+  z-index: 1000;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.swipe-control::before {
+  content: "👆 Deslize para cima/baixo ou esquerda/direita para mover";
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  width: 90%;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.swipe-control::after {
+  content: "➡️ Direita = ⬆️ Cima  |  ⬅️ Esquerda = ⬇️ Baixo";
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  text-align: center;
+  width: 90%;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
 .controle-btn {
   width: 60px;
   height: 60px;
@@ -115,14 +152,17 @@ canvas {
     height: auto !important;
     max-width: 500px;
     border: 2px solid #fff;
-    top: 40% !important; /* Move o canvas mais para cima */
+    top: 35% !important;
   }
   
+  /* Mostra área de swipe apenas no mobile */
+  .swipe-control {
+    display: block !important;
+  }
+  
+  /* Oculta botões no mobile */
   .controle-btn {
-    width: 70px;
-    height: 70px;
-    font-size: 28px;
-    border-radius: 20px;
+    display: none !important;
   }
   
   .instrucoes {
@@ -155,12 +195,26 @@ canvas {
 
 @media screen and (max-width: 480px) {
   canvas {
-    top: 35% !important; /* Move ainda mais para cima em telas pequenas */
+    top: 30% !important;
+  }
+  
+  .swipe-control {
+    height: 160px;
+  }
+  
+  .swipe-control::before {
+    font-size: 13px;
+    top: 15px;
+  }
+  
+  .swipe-control::after {
+    font-size: 11px;
+    bottom: 15px;
   }
   
   .instrucoes {
     position: fixed;
-    top: 10px; /* Volta para o topo em mobile */
+    top: 10px;
     bottom: auto;
     background: rgba(0, 0, 0, 0.8);
     color: white;
@@ -180,16 +234,8 @@ canvas {
     margin: 5px 0 0 0;
   }
   
-  .controle-btn {
-    width: 80px;
-    height: 80px;
-    font-size: 32px;
-    border-radius: 25px;
-  }
-  
-  /* Garante que os botões ficam visíveis abaixo do canvas */
-  body {
-    padding-bottom: 200px;
+  .instrucoes ul li {
+    font-size: 10px;
   }
 }
 

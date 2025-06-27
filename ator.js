@@ -8,8 +8,15 @@ let botaoCima, botaoBaixo;
 let movimentoCima = false;
 let movimentoBaixo = false;
 
-// Variáveis para controle de teclado
+// Variáveis para controle de teclado e swipe
 let teclas = {};
+
+// Variáveis para controle de swipe
+let swipeArea;
+let touchStartX = 0;
+let touchStartY = 0;
+let swipeThreshold = 30; // Distância mínima para registrar swipe
+let isMobile = false;
 
 // Adicionar estas funções globais no p5.js
 function keyPressed() {
@@ -27,12 +34,17 @@ function mostraAtor(){
 }
 
 function movimentaAtor() {
-  // Cria botões apenas se não existirem
-  if (typeof botaoCima === 'undefined' || typeof botaoBaixo === 'undefined') {
+  // Detecta se é dispositivo móvel
+  isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Cria controles baseado no tipo de dispositivo
+  if (isMobile) {
+    criarAreaSwipe();
+  } else {
     criarBotoes();
   }
 
-  // Movimento por botões
+  // Movimento por botões (desktop)
   if (movimentoCima) {
     yAtor -= 1.3;
   }
@@ -52,44 +64,102 @@ function movimentaAtor() {
   yAtor = constrain(yAtor, 0, 366);
 }
 
+function criarAreaSwipe() {
+  if (typeof swipeArea === 'undefined') {
+    swipeArea = createDiv('');
+    swipeArea.id('swipe-area');
+    swipeArea.class('swipe-control');
+    
+    // Eventos de touch para a área de swipe
+    swipeArea.elt.addEventListener('touchstart', handleTouchStart, { passive: false });
+    swipeArea.elt.addEventListener('touchmove', handleTouchMove, { passive: false });
+    swipeArea.elt.addEventListener('touchend', handleTouchEnd, { passive: false });
+  }
+}
+
 function criarBotoes() {
-  // Detecta se é dispositivo móvel
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  
-  // Posição dos botões ajustada para mobile
-  const btnSpacing = isMobile ? 90 : 50;
-  const btnOffset = isMobile ? 100 : 80;
+  // Só cria botões se não existirem e não for mobile
+  if (!isMobile && (typeof botaoCima === 'undefined' || typeof botaoBaixo === 'undefined')) {
+    const btnSpacing = 15;
+    const btnSize = 60;
+    const btnOffset = 30;
+    
+    botaoCima = createButton('↑');
+    botaoCima.position(20, height - btnOffset - btnSize - btnSpacing);
+    botaoCima.class('controle-btn btn-cima');
+    
+    botaoCima.mousePressed(() => movimentoCima = true);
+    botaoCima.mouseReleased(() => movimentoCima = false);
 
-  botaoCima = createButton('↑');
-  botaoCima.position(20, height - btnOffset - btnSpacing);
-  botaoCima.class('controle-btn btn-cima');
-  
-  // Eventos para desktop e mobile
-  botaoCima.mousePressed(() => movimentoCima = true);
-  botaoCima.mouseReleased(() => movimentoCima = false);
-  botaoCima.touchStarted(() => {
-    movimentoCima = true;
-    return false; // Previne comportamento padrão
-  });
-  botaoCima.touchEnded(() => {
-    movimentoCima = false;
-    return false;
-  });
+    botaoBaixo = createButton('↓');
+    botaoBaixo.position(20, height - btnOffset);
+    botaoBaixo.class('controle-btn btn-baixo');
+    
+    botaoBaixo.mousePressed(() => movimentoBaixo = true);
+    botaoBaixo.mouseReleased(() => movimentoBaixo = false);
+  }
+}
 
-  botaoBaixo = createButton('↓');
-  botaoBaixo.position(20, height - btnOffset + 10);
-  botaoBaixo.class('controle-btn btn-baixo');
+// Funções para lidar com eventos de touch/swipe
+function handleTouchStart(e) {
+  e.preventDefault();
+  const touch = e.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+}
+
+function handleTouchMove(e) {
+  e.preventDefault();
+}
+
+function handleTouchEnd(e) {
+  e.preventDefault();
   
-  botaoBaixo.mousePressed(() => movimentoBaixo = true);
-  botaoBaixo.mouseReleased(() => movimentoBaixo = false);
-  botaoBaixo.touchStarted(() => {
-    movimentoBaixo = true;
-    return false;
-  });
-  botaoBaixo.touchEnded(() => {
-    movimentoBaixo = false;
-    return false;
-  });
+  if (!touchStartX || !touchStartY) {
+    return;
+  }
+  
+  const touch = e.changedTouches[0];
+  const touchEndX = touch.clientX;
+  const touchEndY = touch.clientY;
+  
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+  
+  // Verifica se o movimento foi suficiente para ser considerado swipe
+  if (Math.abs(deltaX) > swipeThreshold || Math.abs(deltaY) > swipeThreshold) {
+    // Prioriza movimento horizontal sobre vertical
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // Swipe horizontal
+      if (deltaX > 0) {
+        // Swipe para direita = mover para cima
+        yAtor -= 20; // Movimento mais rápido no swipe
+      } else {
+        // Swipe para esquerda = mover para baixo
+        if (podeSeMover()) {
+          yAtor += 20;
+        }
+      }
+    } else {
+      // Swipe vertical
+      if (deltaY < 0) {
+        // Swipe para cima = mover para cima
+        yAtor -= 20;
+      } else {
+        // Swipe para baixo = mover para baixo
+        if (podeSeMover()) {
+          yAtor += 20;
+        }
+      }
+    }
+    
+    // Limita o movimento
+    yAtor = constrain(yAtor, 0, 366);
+  }
+  
+  // Reset das posições
+  touchStartX = 0;
+  touchStartY = 0;
 }
 
 // Funções para detectar teclas pressionadas - já definidas acima
