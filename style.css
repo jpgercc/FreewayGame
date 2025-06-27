@@ -1,14 +1,206 @@
+/* Reset básico */
+* {
+  box-sizing: border-box;
+}
+
 html, body {
   margin: 0;
   padding: 0;
+  background: linear-gradient(135deg, #635a00 0%, #ffea00 100%);
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+  height: 100vh;
 }
+
+/* Container principal do jogo */
 canvas {
   display: block;
-  padding: 0; /**/
-  margin: auto; /**/
-  position: absolute; /**/
-  top: 0; /**/
-  bottom: 0; /**/
-  left: 0; /**/
-  right: 0; /**/
+  padding: 0;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 4px solid #fff;
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+/* Estilização dos botões de controle */
+.controle-btn {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  font-weight: bold;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  position: absolute;
+  z-index: 1000;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.btn-cima {
+  background: linear-gradient(145deg, #4CAF50, #45a049);
+}
+
+.btn-cima:hover {
+  background: linear-gradient(145deg, #5CBF60, #4CAF50);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.btn-cima:active {
+  background: linear-gradient(145deg, #45a049, #3d8b40);
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-baixo {
+  background: linear-gradient(145deg, #f44336, #da190b);
+}
+
+.btn-baixo:hover {
+  background: linear-gradient(145deg, #f66356, #f44336);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.btn-baixo:active {
+  background: linear-gradient(145deg, #da190b, #c62828);
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Instruções de controle */
+.instrucoes {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 14px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  max-width: 200px;
+}
+
+.instrucoes h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.instrucoes ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #555;
+}
+
+.instrucoes li {
+  margin-bottom: 5px;
+}
+
+/* Responsividade para dispositivos móveis */
+@media screen and (max-width: 768px) {
+  canvas {
+    width: 95vw !important;
+    height: auto !important;
+    max-width: 500px;
+    border: 2px solid #fff;
+    top: 40% !important; /* Move o canvas mais para cima */
+  }
+  
+  .controle-btn {
+    width: 70px;
+    height: 70px;
+    font-size: 28px;
+    border-radius: 20px;
+  }
+  
+  .instrucoes {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    font-size: 12px;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .instrucoes h3 {
+    font-size: 14px;
+  }
+  
+  .instrucoes ul {
+    display: flex;
+    justify-content: space-around;
+    list-style: none;
+    padding: 0;
+    margin: 5px 0;
+  }
+  
+  .instrucoes li {
+    margin: 0 5px;
+    font-size: 11px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  canvas {
+    top: 35% !important; /* Move ainda mais para cima em telas pequenas */
+  }
+  
+  .instrucoes {
+    position: fixed;
+    top: 10px; /* Volta para o topo em mobile */
+    bottom: auto;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 15px;
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  
+  .instrucoes h3 {
+    color: white;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+  
+  .instrucoes p {
+    font-size: 9px;
+    margin: 5px 0 0 0;
+  }
+  
+  .controle-btn {
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
+    border-radius: 25px;
+  }
+  
+  /* Garante que os botões ficam visíveis abaixo do canvas */
+  body {
+    padding-bottom: 200px;
+  }
+}
+
+/* Otimizações para touch */
+@media (hover: none) and (pointer: coarse) {
+  .controle-btn:hover {
+    transform: none;
+  }
+  
+  .controle-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
 }
